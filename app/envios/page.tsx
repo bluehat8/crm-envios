@@ -88,12 +88,14 @@ export default function ShipmentsPage() {
               Nuevo Envío
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader className="sticky top-0 bg-background z-10 pb-4 border-b">
               <DialogTitle>Crear Nuevo Envío</DialogTitle>
               <DialogDescription>Completa la información del envío para registrarlo en el sistema</DialogDescription>
             </DialogHeader>
-            <ShipmentForm onClose={() => setIsDialogOpen(false)} />
+            <div className="p-1">
+              <ShipmentForm onClose={() => setIsDialogOpen(false)} />
+            </div>
           </DialogContent>
         </Dialog>
       </div>

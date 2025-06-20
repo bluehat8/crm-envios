@@ -5,12 +5,28 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, Package, MapPin, Clock } from "lucide-react"
+import { Search, Package, MapPin, Clock, Map as MapIcon } from "lucide-react"
 import { TrackingTimeline } from "@/components/tracking/tracking-timeline"
+import { Map } from "@/components/ui/map"
 
 export default function TrackingPage() {
   const [trackingCode, setTrackingCode] = useState("")
-  const [trackingResult, setTrackingResult] = useState<any>(null)
+  const [trackingResult, setTrackingResult] = useState<{
+    id: string;
+    trackingCode: string;
+    customer: string;
+    origin: string;
+    destination: string;
+    status: string;
+    estimatedDelivery: string;
+    currentLocation: string;
+    timeline: Array<{
+      status: string;
+      location: string;
+      date: string;
+      completed: boolean;
+    }>;
+  } | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSearch = async () => {
@@ -66,6 +82,23 @@ export default function TrackingPage() {
     }, 1000)
   }
 
+  // Coordenadas de ejemplo (puedes reemplazarlas con datos reales de tu base de datos)
+  const getCoordinates = (location: string): [number, number] => {
+    // Coordenadas de ejemplo para ubicaciones comunes
+    const locations: Record<string, [number, number]> = {
+      'Managua, Nicaragua': [12.1364, -86.2514],
+      'San José, Costa Rica': [9.9281, -84.0907],
+      'Frontera Peñas Blancas': [11.0326, -85.6205],
+    };
+    
+    // Buscar la ubicación exacta o una coincidencia parcial
+    const found = Object.entries(locations).find(([key]) => 
+      location.toLowerCase().includes(key.toLowerCase())
+    );
+    
+    return found ? found[1] : [10.4806, -84.0065] as [number, number]; // Ubicación por defecto (Centroamérica)
+  };
+
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
       <div>
@@ -96,6 +129,36 @@ export default function TrackingPage() {
           </div>
         </CardContent>
       </Card>
+
+      {trackingResult && (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <MapIcon className="h-5 w-5 text-blue-500" />
+                  Mapa de Ruta
+                </CardTitle>
+                <CardDescription>
+                  Visualización de la ruta de tu envío
+                </CardDescription>
+              </div>
+              <Badge variant={trackingResult.status === 'entregado' ? 'secondary' : 'default'}>
+                {trackingResult.status === 'en-transito' ? 'En tránsito' : 'Entregado'}
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-lg overflow-hidden border">
+              <Map 
+                origin={getCoordinates(trackingResult.origin)}
+                destination={getCoordinates(trackingResult.destination)}
+                currentLocation={getCoordinates(trackingResult.currentLocation)}
+              />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {trackingResult && (
         <div className="space-y-4">

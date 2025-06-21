@@ -61,8 +61,10 @@ const NavButton = memo(({ item, isActive }: NavButtonProps) => {
         asChild
         variant={isActive ? "secondary" : "ghost"}
         className={cn(
-          "w-full justify-start mb-1 transition-colors",
-          isActive && "bg-blue-50 text-blue-700 border-blue-200"
+          "w-full justify-start transition-colors hover:bg-accent hover:text-accent-foreground",
+          isActive 
+            ? "bg-accent text-primary font-medium" 
+            : "text-muted-foreground"
         )}
       >
         <span>
@@ -80,29 +82,36 @@ function SidebarContent() {
   const pathname = usePathname()
 
   return (
-    <div className="pb-12 w-64 bg-white border-r flex flex-col h-screen sticky top-0">
-      <div className="space-y-4 py-4 flex-1 flex flex-col">
-        <div className="px-3 py-2 flex-1 flex flex-col">
-          <div className="flex items-center mb-6 px-2">
-            <Package className="h-8 w-8 text-blue-600 mr-2 flex-shrink-0" />
-            <div className="min-w-0">
-              <h2 className="text-lg font-semibold truncate">CRM Envíos</h2>
-              <p className="text-xs text-gray-500 truncate">Nicaragua</p>
+    <div className="w-64 border-r border-border bg-card flex flex-col h-screen sticky top-0">
+      <div className="flex-1 flex flex-col">
+        <div className="p-4 border-b border-border">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-primary to-pink-600">
+              <Package className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-foreground">CRM Envíos</h2>
+              <p className="text-xs text-muted-foreground">Nicaragua</p>
             </div>
           </div>
-          <div className="flex-1 overflow-hidden">
-            <ScrollArea className="h-full pr-2">
-              <nav className="space-y-1">
-                {sidebarNavItems.map((item) => (
-                  <NavButton 
-                    key={item.href} 
-                    item={item} 
-                    isActive={pathname === item.href} 
-                  />
-                ))}
-              </nav>
-            </ScrollArea>
-          </div>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">
+            <nav className="p-2 space-y-1">
+              {sidebarNavItems.map((item) => (
+                <NavButton 
+                  key={item.href} 
+                  item={item} 
+                  isActive={pathname === item.href} 
+                />
+              ))}
+            </nav>
+          </ScrollArea>
+        </div>
+      </div>
+      <div className="p-4 border-t border-border">
+        <div className="text-xs text-muted-foreground text-center">
+          v1.0.0
         </div>
       </div>
     </div>
